@@ -140,7 +140,7 @@
           "response": []
         },
         {
-          "name": "TC-S04 Stems filter [3, 55]",
+          "name": "TC-S04 Stems filter [3, 55] Copy",
           "event": [
             {
               "listen": "test",
@@ -890,6 +890,47 @@
               "path": [
                 "flowers",
                 "search"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S22 Stems filter [55, 3]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minNumberOfStems=55&maxNumberOfStems=3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minNumberOfStems",
+                  "value": "55"
+                },
+                {
+                  "key": "maxNumberOfStems",
+                  "value": "3"
+                }
               ]
             }
           },
