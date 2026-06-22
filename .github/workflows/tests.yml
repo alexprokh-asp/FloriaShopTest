@@ -4,6 +4,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   newman-tests:
@@ -27,7 +28,6 @@ jobs:
       - name: Run Newman tests
         run: |
           DATE=$(date +'%Y-%m-%d_%H-%M-%S')
-
           npx newman run postman/collection.json \
             -r cli,htmlextra \
             --reporter-htmlextra-export "reports/report-$DATE.html"
