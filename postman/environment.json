@@ -1,0 +1,11 @@
+{
+  "id": "flower-shop-env",
+  "name": "Flower Shop Env",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "https://floria-shop-api-34kp.onrender.com",
+      "enabled": true
+    }
+  ]
+}

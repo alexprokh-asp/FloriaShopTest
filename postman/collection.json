@@ -1,0 +1,1663 @@
+{
+  "info": {
+    "_postman_id": "9b0cfe9c-d3ec-4fef-ad33-c383f19905f4",
+    "name": "Floria Shop API",
+    "description": "Test collection for Floria Shop API — search, recommendations, batch endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45894867",
+    "_collection_link": "https://go.postman.co/collection/45894867-9b0cfe9c-d3ec-4fef-ad33-c383f19905f4?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Search /flowers/search",
+      "item": [
+        {
+          "name": "TC-S01 No parameters (default page)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has content array', () => pm.expect(json.content).to.be.an('array'));",
+                  "pm.test('Has page object', () => pm.expect(json.page).to.be.an('object'));",
+                  "pm.test('page.number is 0', () => pm.expect(json.page.number).to.eql(0));",
+                  "pm.test('page.size is a number', () => pm.expect(json.page.size).to.be.a('number'));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S02 Price filter [20, 150]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('All prices within [20, 150]', () => {",
+                  "  json.content.forEach(item => {",
+                  "    pm.expect(item.price).to.be.at.least(20);",
+                  "    pm.expect(item.price).to.be.at.most(150);",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minPrice=20&maxPrice=150",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minPrice",
+                  "value": "20"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "150"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S03 Height filter [20, 80]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('All heights within [20, 80]', () => {",
+                  "  json.content.forEach(item => {",
+                  "    pm.expect(item.height).to.be.at.least(20);",
+                  "    pm.expect(item.height).to.be.at.most(80);",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minHeight=20&maxHeight=80",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minHeight",
+                  "value": "20"
+                },
+                {
+                  "key": "maxHeight",
+                  "value": "80"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S04 Stems filter [3, 55]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('All stemsCount within [3, 55]', () => {",
+                  "  json.content.forEach(item => {",
+                  "    pm.expect(item.stemsCount).to.be.at.least(3);",
+                  "    pm.expect(item.stemsCount).to.be.at.most(55);",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minNumberOfStems=3&maxNumberOfStems=55",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minNumberOfStems",
+                  "value": "3"
+                },
+                {
+                  "key": "maxNumberOfStems",
+                  "value": "55"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S05 Sort by price asc",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Prices are in ascending order', () => {",
+                  "  const prices = json.content.map(i => i.price);",
+                  "  for (let i = 1; i < prices.length; i++) {",
+                  "    pm.expect(prices[i]).to.be.at.least(prices[i - 1]);",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?sortBy=price&sortOrder=asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "price"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S06 Sort by price desc",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Prices are in descending order', () => {",
+                  "  const prices = json.content.map(i => i.price);",
+                  "  for (let i = 1; i < prices.length; i++) {",
+                  "    pm.expect(prices[i]).to.be.at.most(prices[i - 1]);",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?sortBy=price&sortOrder=desc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "price"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S07 Sort by popularity desc",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Popular items come first', () => {",
+                  "  let seenNonPopular = false;",
+                  "  json.content.forEach(item => {",
+                  "    if (!item.isPopular) seenNonPopular = true;",
+                  "    if (seenNonPopular) pm.expect(item.isPopular).to.be.false;",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?sortBy=isPopular&sortOrder=desc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "isPopular"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S08 Pagination page=1 size=5",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('page.number is 1', () => pm.expect(json.page.number).to.eql(1));",
+                  "pm.test('page.size is 5', () => pm.expect(json.page.size).to.eql(5));",
+                  "pm.test('content has at most 5 items', () => pm.expect(json.content.length).to.be.at.most(5));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?page=1&size=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "size",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S09 Flower type filter (id=17)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('All items contain flowerType id=17', () => {",
+                  "  json.content.forEach(item => {",
+                  "    const ids = item.flowerTypes.map(f => f.id);",
+                  "    pm.expect(ids).to.include(17);",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?flowerTypeId=17",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "flowerTypeId",
+                  "value": "17"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S10 Color filter (id=1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('All items contain color id=1', () => {",
+                  "  json.content.forEach(item => {",
+                  "    const ids = item.colors.map(c => c.id);",
+                  "    pm.expect(ids).to.include(1);",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?colorId=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "colorId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S11 Occasion filter (id=1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('All items contain occasion id=1', () => {",
+                  "  json.content.forEach(item => {",
+                  "    const ids = item.occasions.map(o => o.id);",
+                  "    pm.expect(ids).to.include(1);",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?occasionIds=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "occasionIds",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S12 Multiple filters combined",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('All prices within [30, 100]', () => {",
+                  "  json.content.forEach(item => {",
+                  "    pm.expect(item.price).to.be.at.least(30);",
+                  "    pm.expect(item.price).to.be.at.most(100);",
+                  "  });",
+                  "});",
+                  "pm.test('Prices are ascending', () => {",
+                  "  const prices = json.content.map(i => i.price);",
+                  "  for (let i = 1; i < prices.length; i++) pm.expect(prices[i]).to.be.at.least(prices[i-1]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minPrice=30&maxPrice=100&colorId=1&sortBy=price&sortOrder=asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minPrice",
+                  "value": "30"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "100"
+                },
+                {
+                  "key": "colorId",
+                  "value": "1"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "price"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S13 Empty result set",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('content is empty array', () => pm.expect(json.content).to.eql([]));",
+                  "pm.test('totalElements is 0', () => pm.expect(json.page.totalElements).to.eql(0));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minPrice=99999&maxPrice=99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minPrice",
+                  "value": "99999"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "99999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S14 minPrice > maxPrice (validation error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minPrice=200&maxPrice=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minPrice",
+                  "value": "200"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S15 minHeight > maxHeight (validation error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minHeight=100&maxHeight=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minHeight",
+                  "value": "100"
+                },
+                {
+                  "key": "maxHeight",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S16 Invalid parameter type (minPrice=abc)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?minPrice=abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "minPrice",
+                  "value": "abc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S17 Unknown sortBy value",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?sortBy=unknown",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "unknown"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S18 Negative page number",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?page=-1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "-1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S19 Page beyond totalPages",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('content is empty', () => pm.expect(json.content).to.eql([]));",
+                  "pm.test('page.number is 9999', () => pm.expect(json.page.number).to.eql(9999));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search?page=9999&size=12",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "9999"
+                },
+                {
+                  "key": "size",
+                  "value": "12"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S20 Response structure",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Top-level keys exist', () => {",
+                  "  pm.expect(json).to.have.property('content');",
+                  "  pm.expect(json).to.have.property('page');",
+                  "});",
+                  "pm.test('page has required fields', () => {",
+                  "  ['size','number','totalElements','totalPages'].forEach(k => pm.expect(json.page).to.have.property(k));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-S21 Item structure",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('First item has all required fields', () => {",
+                  "  if (json.content.length === 0) { pm.test.skip('No items to check'); return; }",
+                  "  const item = json.content[0];",
+                  "  ['id','name','price','isNew','isPopular','isSeasonOffer','imageUrl','height','stemsCount','colors','occasions','flowerTypes','bouquetTypeId']",
+                  "    .forEach(k => pm.expect(item).to.have.property(k));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "search"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Recommendations /flowers/recommendations",
+      "item": [
+        {
+          "name": "TC-R01 Basic request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Response is an array', () => pm.expect(json).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/recommendations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "recommendations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-R02 Exactly 4 items returned",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns exactly 4 items', () => pm.expect(pm.response.json().length).to.eql(4));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/recommendations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "recommendations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-R03 Item structure",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Each item has required fields', () => {",
+                  "  json.forEach(item => {",
+                  "    ['id','name','imageUrl','price','isNew','isPopular','isSeasonOffer','isRecommended']",
+                  "      .forEach(k => pm.expect(item).to.have.property(k));",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/recommendations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "recommendations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-R04 isRecommended = true for all",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('All items have isRecommended=true', () => {",
+                  "  json.forEach(item => pm.expect(item.isRecommended).to.be.true);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/recommendations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "recommendations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-R05 Extra query parameter ignored",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Still returns array of 4', () => pm.expect(pm.response.json().length).to.eql(4));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/recommendations?page=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "recommendations"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-R06 price is a number",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('price is a number in all items', () => {",
+                  "  json.forEach(item => pm.expect(item.price).to.be.a('number'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/recommendations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "recommendations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-R07 discountPercent nullable",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('discountPercent is number or null/undefined', () => {",
+                  "  json.forEach(item => {",
+                  "    const d = item.discountPercent;",
+                  "    pm.expect(d === null || d === undefined || typeof d === 'number').to.be.true;",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/recommendations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "recommendations"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Batch /flowers/batch",
+      "item": [
+        {
+          "name": "TC-B01 Single valid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Returns array', () => pm.expect(json).to.be.an('array'));",
+                  "pm.test('Contains item with id=4', () => pm.expect(json.some(i => i.id === 4)).to.be.true);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "4"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B02 Multiple valid IDs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Returns 2 items', () => pm.expect(json.length).to.eql(2));",
+                  "pm.test('IDs match request', () => {",
+                  "  const ids = json.map(i => i.id);",
+                  "  pm.expect(ids).to.include(4);",
+                  "  pm.expect(ids).to.include(8);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=4&ids=8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "4"
+                },
+                {
+                  "key": "ids",
+                  "value": "8"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B03 Item structure",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Item has all required fields', () => {",
+                  "  if (!json.length) return;",
+                  "  const item = json[0];",
+                  "  ['id','name','price','isNew','isPopular','isSeasonOffer','imageUrl','height','stemsCount','colors','occasions','flowerTypes','bouquetTypeId']",
+                  "    .forEach(k => pm.expect(item).to.have.property(k));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "4"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B04 Non-existent ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns empty array', () => pm.expect(pm.response.json()).to.eql([]));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "999999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B05 Mix of valid and non-existent IDs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Returns only existing item', () => {",
+                  "  pm.expect(json.length).to.eql(1);",
+                  "  pm.expect(json[0].id).to.eql(4);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=4&ids=999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "4"
+                },
+                {
+                  "key": "ids",
+                  "value": "999999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B06 Duplicate IDs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Item returned only once (no duplicates)', () => {",
+                  "  const ids = json.map(i => i.id);",
+                  "  pm.expect(ids.length).to.eql(new Set(ids).size);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=4&ids=4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "4"
+                },
+                {
+                  "key": "ids",
+                  "value": "4"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B07 Missing ids parameter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B08 Non-numeric ID Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "abc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B09 Negative ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400 or empty array', () => {",
+                  "  const status = pm.response.code;",
+                  "  if (status === 200) {",
+                  "    pm.expect(pm.response.json()).to.eql([]);",
+                  "  } else {",
+                  "    pm.expect(status).to.eql(400);",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=-1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "-1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B10 ID = 0",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400 or empty array', () => {",
+                  "  const status = pm.response.code;",
+                  "  if (status === 200) {",
+                  "    pm.expect(pm.response.json()).to.eql([]);",
+                  "  } else {",
+                  "    pm.expect(status).to.eql(400);",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B11 Large number of IDs (stress)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response is an array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=1&ids=2&ids=3&ids=4&ids=5&ids=6&ids=7&ids=8&ids=9&ids=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "1"
+                },
+                {
+                  "key": "ids",
+                  "value": "2"
+                },
+                {
+                  "key": "ids",
+                  "value": "3"
+                },
+                {
+                  "key": "ids",
+                  "value": "4"
+                },
+                {
+                  "key": "ids",
+                  "value": "5"
+                },
+                {
+                  "key": "ids",
+                  "value": "6"
+                },
+                {
+                  "key": "ids",
+                  "value": "7"
+                },
+                {
+                  "key": "ids",
+                  "value": "8"
+                },
+                {
+                  "key": "ids",
+                  "value": "9"
+                },
+                {
+                  "key": "ids",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-B12 Empty ids parameter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));\r",
+                  "pm.test('Error — ids is a required parameter', () => {\r",
+                  "  const json = pm.response.json();\r",
+                  "  pm.expect(json).to.be.an('object');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flowers/batch?ids=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "flowers",
+                "batch"
+              ],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://floria-shop-api-34kp.onrender.com"
+    }
+  ]
+}

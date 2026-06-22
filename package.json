@@ -1,0 +1,10 @@
+{
+  "name": "flower-shop-tests",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "newman run postman/collection.json"
+  },
+  "devDependencies": {
+    "newman": "^6.0.0"
+  }
+}
