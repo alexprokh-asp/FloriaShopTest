@@ -26,7 +26,6 @@ jobs:
         run: mkdir -p reports
 
       - name: Run Newman tests
-        continue-on-error: true
         run: |
           DATE=$(date +'%Y-%m-%d_%H-%M-%S')
           npx newman run postman/collection.json \
@@ -34,28 +33,35 @@ jobs:
             --reporter-htmlextra-export "reports/report-$DATE.html"
 
       - name: Push Report with Maximum Reliability
+        if: always()
         run: |
-          # 1. Save the generated report file details
+          # 1. Check if any report file actually exists
+          if [ ! -d "reports" ] || [ -z "$(ls -A reports/report-*.html 2>/dev/null)" ]; then
+            echo "No report files found to push. Exiting safely."
+            exit 0
+          fi
+
+          # 2. Save the generated report file details
           REPORT_FILE=$(ls reports/report-*.html | head -n 1)
           REPORT_NAME=$(basename $REPORT_FILE)
           
-          # 2. Clone into an isolated directory
+          # 3. Clone into an isolated directory
           git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git target-repo
           
-          # 3. Operations inside the clean directory
+          # 4. Operations inside the clean directory
           cd target-repo
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           
-          # 4. Copy the file into the clean directory
+          # 5. Copy the file into the clean directory
           mkdir -p reports
           cp ../$REPORT_FILE reports/$REPORT_NAME
           
-          # 5. Stage, commit, sync with remote head, and push
+          # 6. Stage and commit safely (allowing empty changes if git gets confused)
           git add reports/$REPORT_NAME
-          git commit -m "chore: add automated test report $REPORT_NAME"
+          git commit -m "chore: add automated test report $REPORT_NAME" --allow-empty
           
-          # Final dynamic sync right before the push to destroy any racing conditions
+          # Final dynamic sync right before the push
           git fetch origin main
           git rebase origin/main
           git push origin main
