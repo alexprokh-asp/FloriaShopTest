@@ -2,11 +2,10 @@
   "name": "flower-shop-tests",
   "version": "1.0.0",
   "scripts": {
-    "test": "newman run postman/collection.json -r cli,html --reporter-html-export report.html"
+    "test": "newman run postman/collection.json -r cli,htmlextra --reporter-htmlextra-export report.html"
   },
   "devDependencies": {
     "newman": "^6.0.0",
-    "newman-reporter-html": "^1.0.5",
     "newman-reporter-htmlextra": "^1.23.1"
   }
 }
