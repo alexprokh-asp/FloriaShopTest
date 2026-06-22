@@ -1,7 +1,7 @@
 name: API Tests (Newman)
 
 on:
-  workflow_dispatch: # <-- NOW IT RUNS ONLY BY BUTTON CLICK
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -41,10 +41,12 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          # 2. Pull latest changes first to prevent conflicts
-          git pull origin main --rebase
-          
-          # 3. Add, commit and push the new report file
+          # 2. Stage and commit the new report file first
           git add reports/
           git commit -m "chore: add automated test report $(date +'%Y-%m-%d %H:%M:%S')"
+          
+          # 3. Pull latest changes with rebase to safely merge if needed
+          git pull origin main --rebase
+          
+          # 4. Push the commit to your repository
           git push origin main
