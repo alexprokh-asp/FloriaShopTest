@@ -111,16 +111,16 @@ After CI run:
 
 ## 📁 Project Structure
 
+```text
 FloriaShopTest/
-├── postman/
-│   └── collection.json
-│
 ├── .github/
 │   └── workflows/
 │       └── tests.yml
-│
+├── postman/
+│   └── collection.json
 ├── package.json
 └── README.md
+```
 
 ---
 
