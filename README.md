@@ -32,6 +32,10 @@ The goal is to validate:
 
 ---
 
+[▶️ RUN AUTOTESTS](https://github.com/alexprokh-asp/FloriaShopTest/actions/workflows/tests.yml)
+
+---
+
 ## 📂 API Under Test
 
 Base URL:
