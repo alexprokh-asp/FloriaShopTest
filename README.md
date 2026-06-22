@@ -26,6 +26,12 @@ The goal is to validate:
 
 ---
 
+## 📊 CI Status
+
+[![CI - API Tests](https://github.com/alexprokh-asp/FloriaShopTest/actions/workflows/tests.yml/badge.svg)](https://github.com/alexprokh-asp/FloriaShopTest/actions/workflows/tests.yml)
+
+---
+
 ## 📂 API Under Test
 
 Base URL:
