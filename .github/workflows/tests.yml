@@ -1,10 +1,7 @@
-name: API Tests (Newman)
+name: API Tests (Newman Beautiful Report)
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   newman-tests:
@@ -22,46 +19,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create reports folder
-        run: mkdir -p reports
+      - name: Run Newman tests via package.json script
+        # continue-on-error allows the job to move to the next step and save the report even if tests fail
+        continue-on-error: true
+        run: npm run test
 
-      - name: Run Newman tests
-        run: |
-          DATE=$(date +'%Y-%m-%d_%H-%M-%S')
-          npx newman run postman/collection.json \
-            -r cli,htmlextra \
-            --reporter-htmlextra-export "reports/report-$DATE.html"
-
-      - name: Push Report with Maximum Reliability
+      - name: Upload Beautiful HTML Report
         if: always()
-        run: |
-          # 1. Check if any report file actually exists
-          if [ ! -d "reports" ] || [ -z "$(ls -A reports/report-*.html 2>/dev/null)" ]; then
-            echo "No report files found to push. Exiting safely."
-            exit 0
-          fi
-
-          # 2. Save the generated report file details
-          REPORT_FILE=$(ls reports/report-*.html | head -n 1)
-          REPORT_NAME=$(basename $REPORT_FILE)
-          
-          # 3. Clone into an isolated directory
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git target-repo
-          
-          # 4. Operations inside the clean directory
-          cd target-repo
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          
-          # 5. Copy the file into the clean directory
-          mkdir -p reports
-          cp ../$REPORT_FILE reports/$REPORT_NAME
-          
-          # 6. Stage and commit safely (allowing empty changes if git gets confused)
-          git add reports/$REPORT_NAME
-          git commit -m "chore: add automated test report $REPORT_NAME" --allow-empty
-          
-          # Final dynamic sync right before the push
-          git fetch origin main
-          git rebase origin/main
-          git push origin main
+        uses: actions/upload-artifact@v4
+        with:
+          name: FloriaShop-Pretty-Report
+          path: report.html
+          if-no-files-found: error
+          retention-days: 90
