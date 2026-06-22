@@ -2,7 +2,7 @@ name: API Tests (Newman)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
 
 jobs:
@@ -19,16 +19,20 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: |
+          npm install --legacy-peer-deps
+          npm install newman newman-reporter-html --save-dev
 
       - name: Create reports folder
         run: mkdir -p reports
 
       - name: Run Newman tests
         run: |
+          DATE=$(date +'%Y-%m-%d_%H-%M-%S')
+
           npx newman run postman/collection.json \
             -r cli,html \
-            --reporter-html-export reports/report-$(date +%Y-%m-%d).html
+            --reporter-html-export "reports/report-$DATE.html"
 
       - name: Upload HTML reports
         uses: actions/upload-artifact@v4
