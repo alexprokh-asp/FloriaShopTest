@@ -21,14 +21,17 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Create reports folder
+        run: mkdir -p reports
+
       - name: Run Newman tests
         run: |
           npx newman run postman/collection.json \
-          -r cli,html \
-          --reporter-html-export report.html
+            -r cli,html \
+            --reporter-html-export reports/report-$(date +%Y-%m-%d).html
 
-      - name: Upload HTML report
+      - name: Upload HTML reports
         uses: actions/upload-artifact@v4
         with:
-          name: newman-report
-          path: report.html
+          name: newman-reports
+          path: reports/
