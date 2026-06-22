@@ -896,7 +896,7 @@
           "response": []
         },
         {
-          "name": "TC-S22 Stems filter [55, 3]",
+          "name": "TC-S22 minStems  > maxSteam (validation error)",
           "event": [
             {
               "listen": "test",
