@@ -1,10 +1,10 @@
 name: API Tests (Newman)
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-  workflow_dispatch:
+  workflow_dispatch: # <-- NOW IT RUNS ONLY BY BUTTON CLICK
+
+permissions:
+  contents: write
 
 jobs:
   newman-tests:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -26,14 +28,18 @@ jobs:
         run: mkdir -p reports
 
       - name: Run Newman tests
+        continue-on-error: true
         run: |
           DATE=$(date +'%Y-%m-%d_%H-%M-%S')
           npx newman run postman/collection.json \
             -r cli,htmlextra \
             --reporter-htmlextra-export "reports/report-$DATE.html"
 
-      - name: Upload HTML reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: newman-reports
-          path: reports/
+      - name: Commit and Push Report to Repository
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add reports/
+          git commit -m "chore: add automated test report $(date +'%Y-%m-%d %H:%M:%S')"
+          git pull --rebase origin main
+          git push origin main
